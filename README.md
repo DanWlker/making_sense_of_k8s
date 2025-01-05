@@ -36,6 +36,18 @@
 
 1. `spec`: The desired state of the deployment. How many replicas you want, will be made here.
 
+    - `replicas`: Amount of replicas
+
+    - `selector/matchLabels/app`: should match `metadata/labels/app`
+
+    - `template/metadata/labels/app`: should match `metadata/labels/app`
+
+    - `containers`: stuff like `name`, `image`, `env`
+
+        - `env`: stuff like `name`, `valueFrom`
+
+            - `valueFrom/configMapKeyRef`: to specify where to get the value from configmap, includes `name`, `key`
+
 1. `status`: The current state of the deployment. You won't edit this directly, it's just for you to see what's going on with your deployment.
 
 ### ConfigMap
