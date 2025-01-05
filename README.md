@@ -1,4 +1,4 @@
-## Making sense of Kubernetes
+# Making sense of Kubernetes
 
 1. `Node` is a kubernetes word for computer (can be VM, physical hardware etc)
 
@@ -8,7 +8,35 @@
 
 1. `ReplicaSet`: Maintains a stable set of replica Pods running at any given time. It's the thing that makes sure that the number of Pods you want running is the same as the number of Pods that are actually running. (You will probably never use ReplicaSets directly)
 
-### Kubectl
+1. `Thrashing Pods`
+
+    Usually caused by:
+
+    - bug in the image
+
+    - misconfigured app
+
+    - dependency of app is misconfigured
+
+    - app using too much memory
+
+1. `CrashLoopBackoff`: Means container is crashing. Kubernetes is all about building self-healing systems, it will automatically restart the container. However, each time it tries to restart the container, if it crashes again, it will wait longer and longer in between restarts. That's why it's called a "backoff".
+
+## Yaml stuff, because why not
+
+1. `apiVersion`: apps/v1 - Specifies the version of the Kubernetes API you're using to create the object (e.g., apps/v1 for Deployments).
+
+1. `kind`: Deployment - Specifies the type of object you're configuring
+
+1. `metadata`: Metadata about the deployment, like when it was created, its name, and its ID
+
+    - `kubectl.kubernetes.io/last-applied-configuration`: will not be there if we do `kubectl create deployment`, but will be there after we do `kubectl apply`
+
+1. `spec`: The desired state of the deployment. How many replicas you want, will be made here.
+
+1. `status`: The current state of the deployment. You won't edit this directly, it's just for you to see what's going on with your deployment.
+
+## Kubectl
 
 1. `kubectl get deployments`: create a deployment, needs `name` and `id of docker image`
 
@@ -36,7 +64,9 @@
 
 1. `kubectl get replicasets`
 
-### Minikube
+1. `kubectl apply -f {configuration}.yaml`
+
+## Minikube
 
 Minikube runs a single node cluster, compared to production kubernetes clusters which are multi-node and distributed
 
