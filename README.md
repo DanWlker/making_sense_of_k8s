@@ -22,6 +22,8 @@
 
 1. `CrashLoopBackoff`: Means container is crashing. Kubernetes is all about building self-healing systems, it will automatically restart the container. However, each time it tries to restart the container, if it crashes again, it will wait longer and longer in between restarts. That's why it's called a "backoff".
 
+1. `ConfigMap`: are not cryptographically secure, should use [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) for sensitive data
+
 ## Yaml stuff, because why not
 
 1. `apiVersion`: apps/v1 - Specifies the version of the Kubernetes API you're using to create the object (e.g., apps/v1 for Deployments).
@@ -42,11 +44,13 @@
 
     - `template/metadata/labels/app`: should match `metadata/labels/app`
 
-    - `containers`: stuff like `name`, `image`, `env`
+    - `containers`: stuff like `name`, `image`, `env` or `envFrom`
 
         - `env`: stuff like `name`, `valueFrom`
 
             - `valueFrom/configMapKeyRef`: to specify where to get the value from configmap, includes `name`, `key`
+
+        - `envFrom/configMapRef`: compared to `env`, we don't have to list each env variable one by one
 
 1. `status`: The current state of the deployment. You won't edit this directly, it's just for you to see what's going on with your deployment.
 
