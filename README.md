@@ -4,13 +4,26 @@
 
 1. `pod`: A Pod is the smallest and simplest unit in the Kubernetes object model that you create or deploy. It represents one (or sometimes more) running container(s) in a cluster
 
+1. `Ephemeral`: Fancy word for "temporary", pods are designed to be spun up, torn down, and restarted at a moment's notice, promotes immutability as well
+
 ### Kubectl
 
 1. `kubectl get deployments`: create a deployment, needs `name` and `id of docker image`
 
-    kubectl create deployment synergychat-web --image=docker.io/bootdotdev/synergychat-web:latest
+    kubectl create deployment some--deployment-name-web --image=docker.io/username/some-docker-image:latest
 
 1. `kubectl get pods`
+    - use `-o wide` to get a wide output
+
+    kubectl get pods -o wide
+
+1. `kubectl port-forward {pod-name} 8080:8080`
+
+1. `kubectl edit deployment {deployment-name}`
+
+1. `kubectl delete pod {pod-name}`
+
+1. `kubectl logs {pod-name}`
 
 ### Minikube
 
