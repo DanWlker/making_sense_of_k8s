@@ -5,7 +5,7 @@ metadata:
   labels:
     app: synergychat-api
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: synergychat-api  # should match metadata/labels/app
@@ -17,3 +17,9 @@ spec:
       containers:
         - name: synergychat-api
           image: bootdotdev/synergychat-api:latest
+          env:
+            - name: API_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: synergychat-api-configmap
+                  key: API_PORT

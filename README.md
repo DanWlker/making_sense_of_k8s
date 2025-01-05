@@ -32,9 +32,15 @@
 
     - `kubectl.kubernetes.io/last-applied-configuration`: will not be there if we do `kubectl create deployment`, but will be there after we do `kubectl apply`
 
+### Deployments
+
 1. `spec`: The desired state of the deployment. How many replicas you want, will be made here.
 
 1. `status`: The current state of the deployment. You won't edit this directly, it's just for you to see what's going on with your deployment.
+
+### ConfigMap
+
+1. `data`: where you specify any key values
 
 ## Kubectl
 
