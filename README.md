@@ -24,6 +24,26 @@
 
 1. `ConfigMap`: are not cryptographically secure, should use [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) for sensitive data
 
+1. `Services`: provide a stable endpoint for pods (service will always be available at a given endpoint even if pods is destroyed and recreated), load balances traffic across a group of pods
+
+    Service Type (spec/type)
+
+    - `ClusterIp`: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster
+
+    - `NodePort`: Exposes the Service on each Node's IP at a static port
+
+    - `LoadBalancer`: Exposes the service externally using a external load balancer (if supported, e.g. AWS, GCP, Azure, or your own)
+
+    - `ExternalName`: Maps the Service to the contents of the externalName field (for example, to the hostname `api.foo.bar.example`). The mapping configures your cluster's DNS server to return a CNAME record with that external hostname value. No proxying of any kind is set up (DNS level redirect, can be used to redirect traffic from one service to another)
+
+    Interesting thing, they are built on top of each other.
+
+    NodePort = ClusterIp + expose service on each node's IP at a statis port
+
+    LoadBalancer = NodePort + external load balancer
+
+    ClusterIp usually go-to, NodePort and LoadBalancer when want to expose a service to the outside world. ExternalName for DNS redirects
+
 ## Yaml stuff, because why not
 
 1. `apiVersion`: apps/v1 - Specifies the version of the Kubernetes API you're using to create the object (e.g., apps/v1 for Deployments).
@@ -58,6 +78,18 @@
 
 1. `data`: where you specify any key values
 
+### Services
+
+1. `spec`: stuff like `ports`, `selector/app`
+
+    - `selector/app`: This should match the `metadata/labels/app` in `Deployments`
+
+    - `ports`: stuff like `protocol`
+
+        - `port`: will listen on this port
+
+        - `targetPort`: traffic will be forwarded to this port in the pods
+
 ## Kubectl
 
 1. `kubectl get deployments`: create a deployment, needs `name` and `id of docker image`
@@ -87,6 +119,10 @@
 1. `kubectl get replicasets`
 
 1. `kubectl apply -f {configuration}.yaml`
+
+1. `kubectl port-forward service/{service-name} 8080:8080`
+
+1. `kubectl get svc` / `kubectl get service`
 
 ## Minikube
 
