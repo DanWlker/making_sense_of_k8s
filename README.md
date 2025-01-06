@@ -44,6 +44,10 @@
 
     ClusterIp usually go-to, NodePort and LoadBalancer when want to expose a service to the outside world. ExternalName for DNS redirects
 
+1. `Ingress`: exposes services to the outside world. 
+
+    ![ingress diagram](./data/ingress.png)
+
 ## Yaml stuff, because why not
 
 1. `apiVersion`: apps/v1 - Specifies the version of the Kubernetes API you're using to create the object (e.g., apps/v1 for Deployments).
