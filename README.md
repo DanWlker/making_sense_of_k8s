@@ -10,15 +10,15 @@
 
 1. `Thrashing Pods`
 
-    Usually caused by:
+   Usually caused by:
 
-    - bug in the image
+   - bug in the image
 
-    - misconfigured app
+   - misconfigured app
 
-    - dependency of app is misconfigured
+   - dependency of app is misconfigured
 
-    - app using too much memory
+   - app using too much memory
 
 1. `CrashLoopBackoff`: Means container is crashing. Kubernetes is all about building self-healing systems, it will automatically restart the container. However, each time it tries to restart the container, if it crashes again, it will wait longer and longer in between restarts. That's why it's called a "backoff".
 
@@ -26,27 +26,27 @@
 
 1. `Services`: provide a stable endpoint for pods (service will always be available at a given endpoint even if pods is destroyed and recreated), load balances traffic across a group of pods
 
-    Service Type (spec/type)
+   Service Type (spec/type)
 
-    - `ClusterIp`: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster
+   - `ClusterIp`: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster
 
-    - `NodePort`: Exposes the Service on each Node's IP at a static port
+   - `NodePort`: Exposes the Service on each Node's IP at a static port
 
-    - `LoadBalancer`: Exposes the service externally using a external load balancer (if supported, e.g. AWS, GCP, Azure, or your own)
+   - `LoadBalancer`: Exposes the service externally using a external load balancer (if supported, e.g. AWS, GCP, Azure, or your own)
 
-    - `ExternalName`: Maps the Service to the contents of the externalName field (for example, to the hostname `api.foo.bar.example`). The mapping configures your cluster's DNS server to return a CNAME record with that external hostname value. No proxying of any kind is set up (DNS level redirect, can be used to redirect traffic from one service to another)
+   - `ExternalName`: Maps the Service to the contents of the externalName field (for example, to the hostname `api.foo.bar.example`). The mapping configures your cluster's DNS server to return a CNAME record with that external hostname value. No proxying of any kind is set up (DNS level redirect, can be used to redirect traffic from one service to another)
 
-    Interesting thing, they are built on top of each other.
+   Interesting thing, they are built on top of each other.
 
-    NodePort = ClusterIp + expose service on each node's IP at a statis port
+   NodePort = ClusterIp + expose service on each node's IP at a statis port
 
-    LoadBalancer = NodePort + external load balancer
+   LoadBalancer = NodePort + external load balancer
 
-    ClusterIp usually go-to, NodePort and LoadBalancer when want to expose a service to the outside world. ExternalName for DNS redirects
+   ClusterIp usually go-to, NodePort and LoadBalancer when want to expose a service to the outside world. ExternalName for DNS redirects
 
-1. `Ingress`: exposes services to the outside world. 
+1. `Ingress`: exposes services to the outside world.
 
-    ![ingress diagram](./data/ingress.png)
+   ![ingress diagram](./data/ingress.png)
 
 ## Yaml stuff, because why not
 
@@ -56,25 +56,27 @@
 
 1. `metadata`: Metadata about the deployment, like when it was created, its name, and its ID
 
-    - `kubectl.kubernetes.io/last-applied-configuration`: will not be there if we do `kubectl create deployment`, but will be there after we do `kubectl apply`
+   - `kubectl.kubernetes.io/last-applied-configuration`: will not be there if we do `kubectl create deployment`, but will be there after we do `kubectl apply`
+
+   - `annotations` : The core Kubernetes API is intentionally kept small, instead of adding a bunch of new fields to the core API, Kubernetes allows you to add arbitrary annotations to your resources, and then various extensions can read those annotations and do things with them. in most production deployments you'll be using annotations specific to the cloud provider you're using. Each major cloud provider has their own products, so you need to use k8s annotations and extensions specific to that cloud provider.
 
 ### Deployments
 
 1. `spec`: The desired state of the deployment. How many replicas you want, will be made here.
 
-    - `replicas`: Amount of replicas
+   - `replicas`: Amount of replicas
 
-    - `selector/matchLabels/app`: should match `metadata/labels/app`
+   - `selector/matchLabels/app`: should match `metadata/labels/app`
 
-    - `template/metadata/labels/app`: should match `metadata/labels/app`
+   - `template/metadata/labels/app`: should match `metadata/labels/app`
 
-    - `containers`: stuff like `name`, `image`, `env` or `envFrom`
+   - `containers`: stuff like `name`, `image`, `env` or `envFrom`
 
-        - `env`: stuff like `name`, `valueFrom`
+     - `env`: stuff like `name`, `valueFrom`
 
-            - `valueFrom/configMapKeyRef`: to specify where to get the value from configmap, includes `name`, `key`
+       - `valueFrom/configMapKeyRef`: to specify where to get the value from configmap, includes `name`, `key`
 
-        - `envFrom/configMapRef`: compared to `env`, we don't have to list each env variable one by one
+     - `envFrom/configMapRef`: compared to `env`, we don't have to list each env variable one by one
 
 1. `status`: The current state of the deployment. You won't edit this directly, it's just for you to see what's going on with your deployment.
 
@@ -86,29 +88,43 @@
 
 1. `spec`: stuff like `ports`, `selector/app`
 
-    - `selector/app`: This should match the `metadata/labels/app` in `Deployments`
+   - `selector/app`: This should match the `metadata/labels/app` in `Deployments`
 
-    - `ports`: stuff like `protocol`
+   - `ports`: stuff like `protocol`
 
-        - `port`: will listen on this port
+     - `port`: will listen on this port
 
-        - `targetPort`: traffic will be forwarded to this port in the pods
+     - `targetPort`: traffic will be forwarded to this port in the pods
+
+### Ingress
+
+1. `spec`
+
+   - `rules`
+
+     - `host`: specfies the host this rule is for
+
+     - `http`
+
+       - `paths`: like `path` or `pathType`
+
+         - `backend`: specifies the backend this host should resolve to, stuff liek `service.name`, `service.port.number`
 
 ## Kubectl
 
 1. `kubectl get deployments`: create a deployment, needs `name` and `id of docker image`
 
-    ```sh
-    kubectl create deployment {some-deployment-name-web} --image={docker.io/username/some-docker-image:latest}
-    ```
+   ```sh
+   kubectl create deployment {some-deployment-name-web} --image={docker.io/username/some-docker-image:latest}
+   ```
 
 1. `kubectl get pods`
 
-    use `-o wide` to get a wide output, including ip address
+   use `-o wide` to get a wide output, including ip address
 
-    ```sh
-    kubectl get pods -o wide
-    ```
+   ```sh
+   kubectl get pods -o wide
+   ```
 
 1. `kubectl port-forward {pod-name} 8080:8080`
 
