@@ -48,6 +48,18 @@
 
    ![ingress diagram](./data/ingress.png)
 
+1. It's important to remember that while it's common for a pod to run just a single container, multiple containers can run in a single pod. This is useful when you have containers that need to share resources. In other words, we can scale up the instances of an application either at the container level or at the pod level.
+
+1. `Persistent Volumes`: Instead of simply adding a volume to a deployment, a persistent volume is a cluster-level resource that is created separately from the pod and then attached to the pod. PVs can be created statically or dynamically.
+
+   - Static PVs are created manually by a cluster admin
+
+   - Dynamic PVs are created automatically when a pod requests a volume that doesn't exist yet
+
+   Generally speaking, and especially in the cloud-native world, we want to use dynamic PVs. It's less work and more flexible.
+
+1. `Persistent Volume Claim`: A persistent volume claim is a request for a persistent volume. When using dynamic provisioning, a PVC will automatically create a PV if one doesn't exist that matches the claim.
+
 ## Yaml stuff, because why not
 
 1. `apiVersion`: apps/v1 - Specifies the version of the Kubernetes API you're using to create the object (e.g., apps/v1 for Deployments).
@@ -114,19 +126,19 @@
 
 1. `kubectl get deployments`: create a deployment, needs `name` and `id of docker image`
 
-   ```sh
-   kubectl create deployment {some-deployment-name-web} --image={docker.io/username/some-docker-image:latest}
-   ```
+    ```sh
+    kubectl create deployment {some-deployment-name-web} --image={docker.io/username/some-docker-image:latest}
+    ```
 
 1. `kubectl get pods`
 
-   use `-o wide` to get a wide output, including ip address
+    use `-o wide` to get a wide output, including ip address
 
-   ```sh
-   kubectl get pods -o wide
-   ```
+    ```sh
+    kubectl get pods -o wide
+    ```
 
-1. `kubectl port-forward {pod-name} 8080:8080`
+1. `kubectl port-forward {pod-name, service/{service-name}} 8080:8080`
 
 1. `kubectl edit deployment {deployment-name}`
 
@@ -134,15 +146,15 @@
 
 1. `kubectl logs {pod-name}`
 
+        `--all-containers`: If there are mulitple containers running on the same pod and see the logs for all of them
+
 1. `kubectl proxy`: start a proxy server on your local machine
 
-1. `kubectl get replicasets`
+1. `kubectl get {replicasets, svc OR service, pvc, pv}`
 
 1. `kubectl apply -f {configuration}.yaml`
 
 1. `kubectl port-forward service/{service-name} 8080:8080`
-
-1. `kubectl get svc` / `kubectl get service`
 
 ## Minikube
 
@@ -155,3 +167,5 @@ Minikube runs a single node cluster, compared to production kubernetes clusters 
 1. `minikube delete`
 
 1. `minikube dashboard`: Open a browser window with a locally hosted dashboard for your cluster. You can use this dashboard to view and manage your cluster.
+
+1. `minikube tunnel -c`: Tunnel creates a route to services deployed with type LoadBalancer and sets their Ingress to their ClusterIP.
