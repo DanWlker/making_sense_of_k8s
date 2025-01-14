@@ -60,6 +60,24 @@
 
 1. `Persistent Volume Claim`: A persistent volume claim is a request for a persistent volume. When using dynamic provisioning, a PVC will automatically create a PV if one doesn't exist that matches the claim.
 
+1. `Namespace`: a way to isolate clusters resources into groups. Names of resources need to be unique within a namespace, but not across namespaces. Namespaces cannot be nested inside one another and each Kubernetes resource can only be in one namespace.
+
+Kubernetes makes it really easy for pods to communicate with each other. It does this by automatically creating DNS entries for each service. The format is:
+
+```
+<service-name>.<namespace>.svc.cluster.local
+```
+
+In reality, the .svc.cluster.local isn't needed in most scenarios.
+
+Unless a service really needs to be made available to the outside world, it's better to keep it internal to the cluster. Internal communications are great because:
+
+1. It's faster (assuming nodes are close to each other physically)
+
+1. No public DNS is required
+
+1. Communication is inherently more secure because it runs on an internal network (usually don't even need HTTPS)
+
 ## Yaml stuff, because why not
 
 1. `apiVersion`: apps/v1 - Specifies the version of the Kubernetes API you're using to create the object (e.g., apps/v1 for Deployments).
@@ -155,6 +173,8 @@
 1. `kubectl apply -f {configuration}.yaml`
 
 1. `kubectl port-forward service/{service-name} 8080:8080`
+
+1. `kubectl create ns crawler`: create a namespace named crawler
 
 ## Minikube
 
