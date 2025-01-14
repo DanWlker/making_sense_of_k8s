@@ -168,13 +168,21 @@ Unless a service really needs to be made available to the outside world, it's be
 
 1. `kubectl proxy`: start a proxy server on your local machine
 
-1. `kubectl get {replicasets, svc OR service, pvc, pv}`
+1. `kubectl get {replicasets, svc OR service, pvc, pv, namespace OR ns}`
 
 1. `kubectl apply -f {configuration}.yaml`
 
 1. `kubectl port-forward service/{service-name} 8080:8080`
 
 1. `kubectl create ns crawler`: create a namespace named crawler
+
+1. `kubectl addons enable {stuff}`
+
+    1. `ingress`: enable the ingress service
+
+    1. `metrics-server`: enable the metrics-server
+
+       1. `kubectl top pod`: see the resource that each pod is using
 
 ## Minikube
 
