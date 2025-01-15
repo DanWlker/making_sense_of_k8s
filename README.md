@@ -1,4 +1,4 @@
-# Making sense of Kubernetes
+# Making sense of Kubernetes (Credit everything here is from Boot.Dev)
 
 1. `Node` is a kubernetes word for computer (can be VM, physical hardware etc)
 
@@ -62,21 +62,55 @@
 
 1. `Namespace`: a way to isolate clusters resources into groups. Names of resources need to be unique within a namespace, but not across namespaces. Namespaces cannot be nested inside one another and each Kubernetes resource can only be in one namespace.
 
-Kubernetes makes it really easy for pods to communicate with each other. It does this by automatically creating DNS entries for each service. The format is:
+   Kubernetes makes it really easy for pods to communicate with each other. It does this by automatically creating DNS entries for each service. The format is:
 
-```
-<service-name>.<namespace>.svc.cluster.local
-```
+   ```
+   <service-name>.<namespace>.svc.cluster.local
+   ```
 
-In reality, the .svc.cluster.local isn't needed in most scenarios.
+   In reality, the .svc.cluster.local isn't needed in most scenarios.
 
-Unless a service really needs to be made available to the outside world, it's better to keep it internal to the cluster. Internal communications are great because:
+   Unless a service really needs to be made available to the outside world, it's better to keep it internal to the cluster. Internal communications are great because:
 
-1. It's faster (assuming nodes are close to each other physically)
+   1. It's faster (assuming nodes are close to each other physically)
 
-1. No public DNS is required
+   1. No public DNS is required
 
-1. Communication is inherently more secure because it runs on an internal network (usually don't even need HTTPS)
+   1. Communication is inherently more secure because it runs on an internal network (usually don't even need HTTPS)
+
+1. `Horizontal Pod Autoscaler (HPA)`: automatically scale the number of Pods in a Deployment based on observed CPU utilization or other custom metrics. It's very common in a Kubernetes environment to have a low number of pods in a deployment, and then scale up the number of pods automatically as CPU usage increases
+
+1. `Node Types`: two types:
+
+   `Control Plane`: The control plane is responsible for managing the cluster. It's where the API server, scheduler, and controller manager live. The control plane used to be called "master nodes", but that term is deprecated now.
+
+   `Worker Nodes`: They're the machines that are actually running our containers.
+
+   Usually concerned with scaling out worker nodes and making sure they're healthy. The control plane is fairly static.
+
+   ![nodes diagram](./data/nodes.png)
+
+1. `Resource requests`: Allows us to tell Kubernetes up front how much resource is required If we try to schedule a new pod with resource requests that exceed the node resource, k8s will gracefully tell us it doesn't have enough resources to do so, or it will use a node in the cluster that has at least the amount of resource available
+
+   General tips:
+
+   - Set memory requests ~10% higher than the average memory usage of your pods
+
+   - Set CPU requests to 50% of the average CPU usage of your pods
+
+   - Set memory limits ~100% higher than the average memory usage of your pods
+
+   - Set CPU limits ~100% higher than the average CPU usage of your pods
+
+   Because:
+
+   - Memory is the scariest resource to run out of. If you run out of CPU, your pods will just slow down. If you run out of memory, your pods will crash. For that reason, it's more important to add a buffer to your memory requests than your CPU requests.
+
+   - Limits should only take effect when a pod is using more resources than it should. Limits are like a safety net. If your limits are constantly being hit, you should either increase them or fix your application code so that it uses fewer resources.
+
+     As such, limits should generally be set higher than requests.
+
+   - Because requests are used to schedule pods, you want to make sure that your requests are high enough that once scheduled, your pods will have the resources, but not so high that you're wasting resources. If you set your requests too high, you'll end up with a situation where you can't schedule pods because k8s thinks it doesn't have enough resources, even though it does.
 
 ## Yaml stuff, because why not
 
@@ -107,6 +141,10 @@ Unless a service really needs to be made available to the outside world, it's be
        - `valueFrom/configMapKeyRef`: to specify where to get the value from configmap, includes `name`, `key`
 
      - `envFrom/configMapRef`: compared to `env`, we don't have to list each env variable one by one
+
+     - `resources`
+
+       - `limits`: stuff like `cpu`, `memory`
 
 1. `status`: The current state of the deployment. You won't edit this directly, it's just for you to see what's going on with your deployment.
 
@@ -168,7 +206,7 @@ Unless a service really needs to be made available to the outside world, it's be
 
 1. `kubectl proxy`: start a proxy server on your local machine
 
-1. `kubectl get {replicasets, svc OR service, pvc, pv, namespace OR ns}`
+1. `kubectl get {replicasets, svc OR service, pvc, pv, namespace OR ns, hpa}`
 
 1. `kubectl apply -f {configuration}.yaml`
 
@@ -183,6 +221,8 @@ Unless a service really needs to be made available to the outside world, it's be
     1. `metrics-server`: enable the metrics-server
 
        1. `kubectl top pod`: see the resource that each pod is using
+
+1. `kubectl describe pods`
 
 ## Minikube
 
