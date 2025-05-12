@@ -14,7 +14,7 @@
 
    Service Type `spec/type`
 
-   - `ClusterIp`: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster
+   - `ClusterIP`: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster
 
    - `NodePort`: Exposes the Service on each Node's IP at a static port
 
@@ -24,11 +24,15 @@
 
    They are built on top of each other.
 
-   - NodePort = ClusterIp + expose service on each node's IP at a static port
+   - `NodePort` = `ClusterIP` + expose service on each node's IP at a static port
 
-   - LoadBalancer = NodePort + external load balancer
+   - `LoadBalancer` = `NodePort` + external load balancer
 
-   - ClusterIp usually go-to, NodePort and LoadBalancer when want to expose a service to the outside world. ExternalName for DNS redirects
+   - `ClusterIP` usually go-to, `NodePort` and `LoadBalancer` when want to expose a service to the outside world. ExternalName for DNS redirects
+
+1. `Ingress`: exposes services to the outside world.
+
+   ![ingress diagram](./data/ingress.png)
 
 Extras:
 
@@ -45,10 +49,6 @@ Extras:
    - app using too much memory
 
 1. `CrashLoopBackoff`: Means container is crashing. Kubernetes is all about building self-healing systems, it will automatically restart the container. However, each time it tries to restart the container, if it crashes again, it will wait longer and longer in between restarts. That's why it's called a "backoff".
-
-1. `Ingress`: exposes services to the outside world.
-
-   ![ingress diagram](./data/ingress.png)
 
 1. It's important to remember that while it's common for a pod to run just a single container, multiple containers can run in a single pod. This is useful when you have containers that need to share resources. In other words, we can scale up the instances of an application either at the container level or at the pod level.
 
@@ -201,6 +201,10 @@ Extras:
 ### To run kubectl targeting a remote
 
 1. You need to copy out the kubeconfig file. This file is usuall the `$HOME/.kube/config` or the `/etc/kubernetes/admin.conf` assuming you use root. You can use sftp to copy it, locally the kubectl version should be [one minor version difference of your server version](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#before-you-begin)
+
+### When deploying stuff
+
+1. When deploying ingress with a `NodePort` configuration, you need to specify the `spec/ingressClassName: nginx` nginx here is just an example, depends on which controller you're using
 
 ## Yaml stuff, because why not
 
