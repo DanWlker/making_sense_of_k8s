@@ -4,9 +4,33 @@
 
 1. `Pod`: A Pod is the smallest and simplest unit in the Kubernetes object model that you create or deploy. It represents one (or sometimes more) running container(s) in a cluster
 
-1. `Deployment`: You declare the desired "state" in the deployment and kubernetes will make it come true based on that (A Deployment provides declarative updates for Pods and ReplicaSets.)
+1. `Deployment`: You declare the desired "state" in a deployment and kubernetes will make it come true based on that (A Deployment provides declarative updates for Pods and ReplicaSets.) It is a higher level abstraction that manages ReplicaSets as well
 
 1. `ReplicaSet`: Maintains a stable set of replica Pods running at any given time. It's the thing that makes sure that the number of Pods you want running is the same as the number of Pods that are actually running. (You will probably never use ReplicaSets directly)
+
+1. `ConfigMap`: are not cryptographically secure, should use [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) for sensitive data
+
+1. `Services`: provide a stable endpoint for pods (service will always be available at a given endpoint even if pods is destroyed and recreated), load balances traffic across a group of pods
+
+   Service Type `spec/type`
+
+   - `ClusterIp`: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster
+
+   - `NodePort`: Exposes the Service on each Node's IP at a static port
+
+   - `LoadBalancer`: Exposes the service externally using a external load balancer (if supported, e.g. AWS, GCP, Azure, or your own)
+
+   - `ExternalName`: Maps the Service to the contents of the externalName field (for example, to the hostname `api.foo.bar.example`). The mapping configures your cluster's DNS server to return a CNAME record with that external hostname value. No proxying of any kind is set up (DNS level redirect, can be used to redirect traffic from one service to another)
+
+   They are built on top of each other.
+
+   - NodePort = ClusterIp + expose service on each node's IP at a static port
+
+   - LoadBalancer = NodePort + external load balancer
+
+   - ClusterIp usually go-to, NodePort and LoadBalancer when want to expose a service to the outside world. ExternalName for DNS redirects
+
+Extras:
 
 1. `Thrashing Pods`
 
@@ -21,28 +45,6 @@
    - app using too much memory
 
 1. `CrashLoopBackoff`: Means container is crashing. Kubernetes is all about building self-healing systems, it will automatically restart the container. However, each time it tries to restart the container, if it crashes again, it will wait longer and longer in between restarts. That's why it's called a "backoff".
-
-1. `ConfigMap`: are not cryptographically secure, should use [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) for sensitive data
-
-1. `Services`: provide a stable endpoint for pods (service will always be available at a given endpoint even if pods is destroyed and recreated), load balances traffic across a group of pods
-
-   Service Type (spec/type)
-
-   - `ClusterIp`: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster
-
-   - `NodePort`: Exposes the Service on each Node's IP at a static port
-
-   - `LoadBalancer`: Exposes the service externally using a external load balancer (if supported, e.g. AWS, GCP, Azure, or your own)
-
-   - `ExternalName`: Maps the Service to the contents of the externalName field (for example, to the hostname `api.foo.bar.example`). The mapping configures your cluster's DNS server to return a CNAME record with that external hostname value. No proxying of any kind is set up (DNS level redirect, can be used to redirect traffic from one service to another)
-
-   Interesting thing, they are built on top of each other.
-
-   NodePort = ClusterIp + expose service on each node's IP at a statis port
-
-   LoadBalancer = NodePort + external load balancer
-
-   ClusterIp usually go-to, NodePort and LoadBalancer when want to expose a service to the outside world. ExternalName for DNS redirects
 
 1. `Ingress`: exposes services to the outside world.
 
