@@ -4,7 +4,7 @@
 
 1. `Pod`: A Pod is the smallest and simplest unit in the Kubernetes object model that you create or deploy. It represents one (or sometimes more) running container(s) in a cluster
 
-1. `Ephemeral`: Fancy word for "temporary", pods are designed to be spun up, torn down, and restarted at a moment's notice, promotes immutability as well
+1. `Deployment`: You declare the desired "state" in the deployment and kubernetes will make it come true based on that (A Deployment provides declarative updates for Pods and ReplicaSets.)
 
 1. `ReplicaSet`: Maintains a stable set of replica Pods running at any given time. It's the thing that makes sure that the number of Pods you want running is the same as the number of Pods that are actually running. (You will probably never use ReplicaSets directly)
 
@@ -112,6 +112,94 @@
 
    - Because requests are used to schedule pods, you want to make sure that your requests are high enough that once scheduled, your pods will have the resources, but not so high that you're wasting resources. If you set your requests too high, you'll end up with a situation where you can't schedule pods because k8s thinks it doesn't have enough resources, even though it does.
 
+## Kubectl
+
+1. `kubectl get deployments`: create a deployment, needs `name` and `id of docker image`
+
+    ```sh
+    kubectl create deployment {some-deployment-name-web} --image={docker.io/username/some-docker-image:latest}
+    ```
+
+1. `kubectl get pods`
+
+    use `-o wide` to get a wide output, including ip address
+
+    ```sh
+    kubectl get pods -o wide
+    ```
+
+    use `-A` to get everything
+
+1. `kubectl port-forward {pod-name, service/{service-name}} 8080:8080`
+
+1. `kubectl edit deployment {deployment-name}`
+
+1. `kubectl delete pod {pod-name}`
+
+1. `kubectl logs {pod-name}`
+
+        `--all-containers`: If there are mulitple containers running on the same pod and see the logs for all of them
+
+1. `kubectl proxy`: start a proxy server on your local machine
+
+1. `kubectl get {replicasets, svc OR service, pvc, pv, namespace OR ns, hpa}`
+
+1. `kubectl apply -f {configuration}.yaml`
+
+1. `kubectl port-forward service/{service-name} 8080:8080`
+
+1. `kubectl create ns crawler`: create a namespace named crawler
+
+1. `kubectl addons enable {stuff}`
+
+    1. `ingress`: enable the ingress service
+
+    1. `metrics-server`: enable the metrics-server
+
+       1. `kubectl top pod`: see the resource that each pod is using
+
+1. `kubectl describe pods`
+
+1. `kubectl get nodes`
+
+## Minikube
+
+Minikube runs a single node cluster, compared to production kubernetes clusters which are multi-node and distributed
+
+1. `minikube start`
+
+1. `minikube stop`
+
+1. `minikube delete`
+
+1. `minikube dashboard`: Open a browser window with a locally hosted dashboard for your cluster. You can use this dashboard to view and manage your cluster.
+
+1. `minikube tunnel -c`: Tunnel creates a route to services deployed with type LoadBalancer and sets their Ingress to their ClusterIP.
+
+## Setting up local k8 cluster
+
+[Guide](https://medium.com/@saderi/quickly-set-up-a-multi-node-kubernetes-cluster-on-ubuntu-b7544c284b7b)
+
+Extras:
+
+1. If cannot find br_netfilter
+
+   - `sudo modprobe br_netfilter`
+   - `lsmod | grep br_netfilter` to verify its loaded
+   - `echo "br_netfilter" | sudo tee /etc/modules-load.d/k8s.conf` to persist across reboots
+
+1. To allow a 'worker' to join a control-plane, go to the control plane and run `sudo kubeadm token create --print-join-command` and run the resultant command on the worker node
+
+1. To reset what you ran with `kubeadm init`, run `sudo kubeadm reset`
+
+1. If local use Flannel, if need other stuff use Cilium. Weave is discontinued and Calico should be worse than Cilium
+
+1. `free -h` to check the swap status
+
+### To run kubectl targeting a remote
+
+1. You need to copy out the kubeconfig file. This file is usuall the `$HOME/.kube/config` or the `/etc/kubernetes/admin.conf` assuming you use root. You can use sftp to copy it, locally the kubectl version should be [one minor version difference of your server version](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#before-you-begin)
+
 ## Yaml stuff, because why not
 
 1. `apiVersion`: apps/v1 - Specifies the version of the Kubernetes API you're using to create the object (e.g., apps/v1 for Deployments).
@@ -177,87 +265,3 @@
        - `paths`: like `path` or `pathType`
 
          - `backend`: specifies the backend this host should resolve to, stuff liek `service.name`, `service.port.number`
-
-## Kubectl
-
-1. `kubectl get deployments`: create a deployment, needs `name` and `id of docker image`
-
-    ```sh
-    kubectl create deployment {some-deployment-name-web} --image={docker.io/username/some-docker-image:latest}
-    ```
-
-1. `kubectl get pods`
-
-    use `-o wide` to get a wide output, including ip address
-
-    ```sh
-    kubectl get pods -o wide
-    ```
-
-1. `kubectl port-forward {pod-name, service/{service-name}} 8080:8080`
-
-1. `kubectl edit deployment {deployment-name}`
-
-1. `kubectl delete pod {pod-name}`
-
-1. `kubectl logs {pod-name}`
-
-        `--all-containers`: If there are mulitple containers running on the same pod and see the logs for all of them
-
-1. `kubectl proxy`: start a proxy server on your local machine
-
-1. `kubectl get {replicasets, svc OR service, pvc, pv, namespace OR ns, hpa}`
-
-1. `kubectl apply -f {configuration}.yaml`
-
-1. `kubectl port-forward service/{service-name} 8080:8080`
-
-1. `kubectl create ns crawler`: create a namespace named crawler
-
-1. `kubectl addons enable {stuff}`
-
-    1. `ingress`: enable the ingress service
-
-    1. `metrics-server`: enable the metrics-server
-
-       1. `kubectl top pod`: see the resource that each pod is using
-
-1. `kubectl describe pods`
-
-## Minikube
-
-Minikube runs a single node cluster, compared to production kubernetes clusters which are multi-node and distributed
-
-1. `minikube start`
-
-1. `minikube stop`
-
-1. `minikube delete`
-
-1. `minikube dashboard`: Open a browser window with a locally hosted dashboard for your cluster. You can use this dashboard to view and manage your cluster.
-
-1. `minikube tunnel -c`: Tunnel creates a route to services deployed with type LoadBalancer and sets their Ingress to their ClusterIP.
-
-## Setting up local k8 cluster
-
-[Guide](https://medium.com/@saderi/quickly-set-up-a-multi-node-kubernetes-cluster-on-ubuntu-b7544c284b7b)
-
-Extras:
-
-1. If cannot find br_netfilter
-
-   - `sudo modprobe br_netfilter`
-   - `lsmod | grep br_netfilter` to verify its loaded
-   - `echo "br_netfilter" | sudo tee /etc/modules-load.d/k8s.conf` to persist across reboots
-
-1. To allow a 'worker' to join a control-plane, go to the control plane and run `sudo kubeadm token create --print-join-command` and run the resultant command on the worker node
-
-1. To reset what you ran with `kubeadm init`, run `sudo kubeadm reset`
-
-1. If local use Flannel, if need other stuff use Cilium. Weave is discontinued and Calico should be worse than Cilium
-
-1. `free -h` to check the swap status
-
-### To run kubectl targeting a remote
-
-1. You need to copy out the kubeconfig file. This file is usuall the `$HOME/.kube/config` or the `/etc/kubernetes/admin.conf` assuming you use root. You can use sftp to copy it, locally the kubectl version should be [one minor version difference of your server version](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#before-you-begin)
