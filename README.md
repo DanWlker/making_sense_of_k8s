@@ -1,4 +1,4 @@
-# Making sense of Kubernetes (Credit everything here is from Boot.Dev)
+# Making sense of Kubernetes (Credit To Boot.Dev)
 
 1. `Node` is a kubernetes word for computer (can be VM, physical hardware etc)
 
@@ -237,3 +237,7 @@ Minikube runs a single node cluster, compared to production kubernetes clusters 
 1. `minikube dashboard`: Open a browser window with a locally hosted dashboard for your cluster. You can use this dashboard to view and manage your cluster.
 
 1. `minikube tunnel -c`: Tunnel creates a route to services deployed with type LoadBalancer and sets their Ingress to their ClusterIP.
+
+## Setting up local k8 cluster
+
+[Guide](https://medium.com/@saderi/quickly-set-up-a-multi-node-kubernetes-cluster-on-ubuntu-b7544c284b7b)
