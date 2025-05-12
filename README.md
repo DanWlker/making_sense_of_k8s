@@ -241,3 +241,23 @@ Minikube runs a single node cluster, compared to production kubernetes clusters 
 ## Setting up local k8 cluster
 
 [Guide](https://medium.com/@saderi/quickly-set-up-a-multi-node-kubernetes-cluster-on-ubuntu-b7544c284b7b)
+
+Extras:
+
+1. If cannot find br_netfilter
+
+   - `sudo modprobe br_netfilter`
+   - `lsmod | grep br_netfilter` to verify its loaded
+   - `echo "br_netfilter" | sudo tee /etc/modules-load.d/k8s.conf` to persist across reboots
+
+1. To allow a 'worker' to join a control-plane, go to the control plane and run `sudo kubeadm token create --print-join-command` and run the resultant command on the worker node
+
+1. To reset what you ran with `kubeadm init`, run `sudo kubeadm reset`
+
+1. If local use Flannel, if need other stuff use Cilium. Weave is discontinued and Calico should be worse than Cilium
+
+1. `free -h` to check the swap status
+
+### To run kubectl targeting a remote
+
+1. You need to copy out the kubeconfig file. This file is usuall the `$HOME/.kube/config` or the `/etc/kubernetes/admin.conf` assuming you use root. You can use sftp to copy it, locally the kubectl version should be [one minor version difference of your server version](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#before-you-begin)
