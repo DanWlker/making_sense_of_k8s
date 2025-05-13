@@ -34,7 +34,16 @@
 
    ![ingress diagram](./data/ingress.png)
 
-Extras:
+1. `Persistent Volumes`: Instead of simply adding a volume to a deployment, a persistent volume is a cluster-level resource that is created separately from the pod and then attached to the pod. PVs can be created statically or dynamically.
+
+   - Static PVs are created manually by a cluster admin
+
+   - Dynamic PVs are created automatically when a pod requests a volume that doesn't exist yet
+
+   Generally speaking, and especially in the cloud-native world, we want to use dynamic PVs. It's less work and more flexible.
+
+1. `Persistent Volume Claim`: A persistent volume claim is a request for a persistent volume. When using dynamic provisioning, a PVC will automatically create a PV if one doesn't exist that matches the claim.
+   Extras:
 
 1. `Thrashing Pods`
 
@@ -51,16 +60,6 @@ Extras:
 1. `CrashLoopBackoff`: Means container is crashing. Kubernetes is all about building self-healing systems, it will automatically restart the container. However, each time it tries to restart the container, if it crashes again, it will wait longer and longer in between restarts. That's why it's called a "backoff".
 
 1. It's important to remember that while it's common for a pod to run just a single container, multiple containers can run in a single pod. This is useful when you have containers that need to share resources. In other words, we can scale up the instances of an application either at the container level or at the pod level.
-
-1. `Persistent Volumes`: Instead of simply adding a volume to a deployment, a persistent volume is a cluster-level resource that is created separately from the pod and then attached to the pod. PVs can be created statically or dynamically.
-
-   - Static PVs are created manually by a cluster admin
-
-   - Dynamic PVs are created automatically when a pod requests a volume that doesn't exist yet
-
-   Generally speaking, and especially in the cloud-native world, we want to use dynamic PVs. It's less work and more flexible.
-
-1. `Persistent Volume Claim`: A persistent volume claim is a request for a persistent volume. When using dynamic provisioning, a PVC will automatically create a PV if one doesn't exist that matches the claim.
 
 1. `Namespace`: a way to isolate clusters resources into groups. Names of resources need to be unique within a namespace, but not across namespaces. Namespaces cannot be nested inside one another and each Kubernetes resource can only be in one namespace.
 
