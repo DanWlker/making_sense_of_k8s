@@ -113,7 +113,13 @@
 
    - Because requests are used to schedule pods, you want to make sure that your requests are high enough that once scheduled, your pods will have the resources, but not so high that you're wasting resources. If you set your requests too high, you'll end up with a situation where you can't schedule pods because k8s thinks it doesn't have enough resources, even though it does.
 
-## Kubectl
+## Tools
+
+### K9s
+
+[cheatsheet](https://www.hackingnote.com/en/cheatsheets/k9s/)
+
+### Kubectl
 
 1. `kubectl get deployments`: create a deployment, needs `name` and `id of docker image`
 
