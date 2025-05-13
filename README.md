@@ -12,8 +12,12 @@
   - [Setting up local k8 cluster](#setting-up-local-k8-cluster)
     - [To run kubectl targeting a remote](#to-run-kubectl-targeting-a-remote)
     - [When deploying stuff](#when-deploying-stuff)
-  - [Yaml stuff, because why not](#yaml-stuff-because-why-not) - [Deployments](#deployments) - [ConfigMap](#configmap) - [Services](#services) - [Ingress](#ingress)
-  <!--toc:end-->
+  - [Yaml stuff, because why not](#yaml-stuff-because-why-not)
+    - [Deployments](#deployments)
+    - [ConfigMap](#configmap)
+    - [Services](#services)
+    - [Ingress](#ingress)
+    <!--toc:end-->
 
 ## Components
 
