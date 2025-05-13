@@ -1,7 +1,10 @@
 # Making sense of Kubernetes (Credit To Boot.Dev)
 
 <!--toc:start-->
+
 - [Making sense of Kubernetes (Credit To Boot.Dev)](#making-sense-of-kubernetes-credit-to-bootdev)
+  - [Components](#components)
+  - [Other Terms](#other-terms)
   - [Tools](#tools)
     - [K9s](#k9s)
     - [Kubectl](#kubectl)
@@ -9,12 +12,10 @@
   - [Setting up local k8 cluster](#setting-up-local-k8-cluster)
     - [To run kubectl targeting a remote](#to-run-kubectl-targeting-a-remote)
     - [When deploying stuff](#when-deploying-stuff)
-  - [Yaml stuff, because why not](#yaml-stuff-because-why-not)
-    - [Deployments](#deployments)
-    - [ConfigMap](#configmap)
-    - [Services](#services)
-    - [Ingress](#ingress)
-<!--toc:end-->
+  - [Yaml stuff, because why not](#yaml-stuff-because-why-not) - [Deployments](#deployments) - [ConfigMap](#configmap) - [Services](#services) - [Ingress](#ingress)
+  <!--toc:end-->
+
+## Components
 
 1. `Node` is a kubernetes word for computer (can be VM, physical hardware etc)
 
@@ -60,6 +61,8 @@
 
 1. `Persistent Volume Claim`: A persistent volume claim is a request for a persistent volume. When using dynamic provisioning, a PVC will automatically create a PV if one doesn't exist that matches the claim.
    Extras:
+
+## Other Terms
 
 1. `Thrashing Pods`
 
