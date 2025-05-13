@@ -1,5 +1,21 @@
 # Making sense of Kubernetes (Credit To Boot.Dev)
 
+<!--toc:start-->
+- [Making sense of Kubernetes (Credit To Boot.Dev)](#making-sense-of-kubernetes-credit-to-bootdev)
+  - [Tools](#tools)
+    - [K9s](#k9s)
+    - [Kubectl](#kubectl)
+    - [Minikube](#minikube)
+  - [Setting up local k8 cluster](#setting-up-local-k8-cluster)
+    - [To run kubectl targeting a remote](#to-run-kubectl-targeting-a-remote)
+    - [When deploying stuff](#when-deploying-stuff)
+  - [Yaml stuff, because why not](#yaml-stuff-because-why-not)
+    - [Deployments](#deployments)
+    - [ConfigMap](#configmap)
+    - [Services](#services)
+    - [Ingress](#ingress)
+<!--toc:end-->
+
 1. `Node` is a kubernetes word for computer (can be VM, physical hardware etc)
 
 1. `Pod`: A Pod is the smallest and simplest unit in the Kubernetes object model that you create or deploy. It represents one (or sometimes more) running container(s) in a cluster
@@ -169,7 +185,7 @@
 
 1. `kubectl get nodes`
 
-## Minikube
+### Minikube
 
 Minikube runs a single node cluster, compared to production kubernetes clusters which are multi-node and distributed
 
